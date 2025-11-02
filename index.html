@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parenthesis Checker | Programming Assignment Tool</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section, .output-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        h2 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .check-btn {
+            background-color: var(--primary);
+            color: white;
+            flex: 1;
+        }
+        
+        .check-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .clear-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .example-btn {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .example-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+        
+        .details {
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .details h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .details ul {
+            padding-left: 20px;
+        }
+        
+        .details li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background-color: rgba(52, 152, 219, 0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .error-position {
+            margin-top: 10px;
+            color: var(--danger);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Parenthesis Checker</h1>
+            <p class="subtitle">Validate balanced parentheses, brackets, and braces in your code</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2>Input Code</h2>
+                <textarea id="codeInput" placeholder="Paste your code here..."></textarea>
+                
+                <div class="button-group">
+                    <button class="check-btn" id="checkBtn">Check Parentheses</button>
+                    <button class="clear-btn" id="clearBtn">Clear</button>
+                    <button class="example-btn" id="exampleBtn">Load Example</button>
+                </div>
+                
+                <div class="result" id="result"></div>
+                <div class="error-position" id="errorPosition"></div>
+            </div>
+            
+            <div class="output-section">
+                <h2>How It Works</h2>
+                <div class="details">
+                    <h3>What does this tool check?</h3>
+                    <p>This tool validates whether your code has balanced:</p>
+                    <ul>
+                        <li>Parentheses: <span class="highlight">( )</span></li>
+                        <li>Brackets: <span class="highlight">[ ]</span></li>
+                        <li>Braces: <span class="highlight">{ }</span></li>
+                    </ul>
+                    
+                    <h3>Why is this important?</h3>
+                    <p>Unbalanced parentheses are a common source of syntax errors in programming. This tool helps you quickly identify and fix these issues.</p>
+                    
+                    <h3>How to use:</h3>
+                    <ol>
+                        <li>Paste your code in the input area</li>
+                        <li>Click "Check Parentheses" to validate</li>
+                        <li>Review the results and fix any issues</li>
+                    </ol>
+                </div>
+                
+                <div class="details">
+                    <h3>Supported Languages</h3>
+                    <p>This tool works with any programming language that uses parentheses, brackets, or braces, including:</p>
+                    <ul>
+                        <li>JavaScript, Java, C, C++</li>
+                        <li>Python, Ruby, PHP</li>
+                        <li>HTML, CSS, JSON</li>
+                        <li>And many more!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Parenthesis Checker &copy; 2023 | Programming Assignment Tool</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeInput = document.getElementById('codeInput');
+            const checkBtn = document.getElementById('checkBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const exampleBtn = document.getElementById('exampleBtn');
+            const result = document.getElementById('result');
+            const errorPosition = document.getElementById('errorPosition');
+            
+            // Example code with balanced parentheses
+            const exampleCode = `function factorial(n) {
+    if (n <= 1) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+
+const numbers = [1, 2, 3, 4, 5];
+const squares = numbers.map(x => x * x);
+
+const person = {
+    name: "John",
+    age: 30,
+    hobbies: ["reading", "coding", "gaming"]
+};`;
+            
+            // Load example code
+            exampleBtn.addEventListener('click', function() {
+                codeInput.value = exampleCode;
+                result.style.display = 'none';
+                errorPosition.textContent = '';
+            });
+            
+            // Clear input
+            clearBtn.addEventListener('click', function() {
+                codeInput.value = '';
+                result.style.display = 'none';
+                errorPosition.textContent = '';
+            });
+            
+            // Check parentheses
+            checkBtn.addEventListener('click', function() {
+                const code = codeInput.value;
+                if (!code.trim()) {
+                    showResult('Please enter some code to check.', 'error');
+                    return;
+                }
+                
+                const checkResult = checkParentheses(code);
+                if (checkResult.isBalanced) {
+                    showResult('✓ All parentheses, brackets, and braces are properly balanced!', 'success');
+                    errorPosition.textContent = '';
+                } else {
+                    showResult('✗ Unbalanced ' + checkResult.type + ' detected!', 'error');
+                    
+                    // Show approximate position of error
+                    if (checkResult.position >= 0) {
+                        const lines = code.substring(0, checkResult.position).split('\n');
+                        const lineNumber = lines.length;
+                        const columnNumber = lines[lines.length - 1].length + 1;
+                        errorPosition.textContent = `Error around line ${lineNumber}, column ${columnNumber}`;
+                    }
+                }
+            });
+            
+            function showResult(message, type) {
+                result.textContent = message;
+                result.className = 'result ' + type;
+                result.style.display = 'block';
+            }
+            
+            function checkParentheses(code) {
+                const stack = [];
+                const opening = '([{';
+                const closing = ')]}';
+                const pairs = {
+                    ')': '(',
+                    ']': '[',
+                    '}': '{'
+                };
+                
+                // Track string and comment states to ignore parentheses inside them
+                let inSingleQuote = false;
+                let inDoubleQuote = false;
+                let inTemplateLiteral = false;
+                let inSingleLineComment = false;
+                let inMultiLineComment = false;
+                
+                for (let i = 0; i < code.length; i++) {
+                    const char = code[i];
+                    const prevChar = i > 0 ? code[i-1] : '';
+                    const nextChar = i < code.length - 1 ? code[i+1] : '';
+                    
+                    // Handle string and comment states
+                    if (!inSingleLineComment && !inMultiLineComment) {
+                        if (char === "'" && !inDoubleQuote && !inTemplateLiteral && prevChar !== '\\') {
+                            inSingleQuote = !inSingleQuote;
+                        } else if (char === '"' && !inSingleQuote && !inTemplateLiteral && prevChar !== '\\') {
+                            inDoubleQuote = !inDoubleQuote;
+                        } else if (char === '`' && !inSingleQuote && !inDoubleQuote && prevChar !== '\\') {
+                            inTemplateLiteral = !inTemplateLiteral;
+                        } else if (char === '/' && nextChar === '/' && !inSingleQuote && !inDoubleQuote && !inTemplateLiteral) {
+                            inSingleLineComment = true;
+                        } else if (char === '/' && nextChar === '*' && !inSingleQuote && !inDoubleQuote && !inTemplateLiteral) {
+                            inMultiLineComment = true;
+                        }
+                    } else {
+                        if (inSingleLineComment && char === '\n') {
+                            inSingleLineComment = false;
+                        } else if (inMultiLineComment && char === '*' && nextChar === '/') {
+                            inMultiLineComment = false;
+                            i++; // Skip the next character
+                        }
+                    }
+                    
+                    // Skip characters inside strings or comments
+                    if (inSingleQuote || inDoubleQuote || inTemplateLiteral || inSingleLineComment || inMultiLineComment) {
+                        continue;
+                    }
+                    
+                    // Check for opening parentheses
+                    if (opening.includes(char)) {
+                        stack.push({ type: char, position: i });
+                    }
+                    // Check for closing parentheses
+                    else if (closing.includes(char)) {
+                        if (stack.length === 0) {
+                            return {
+                                isBalanced: false,
+                                type: char,
+                                position: i
+                            };
+                        }
+                        
+                        const last = stack.pop();
+                        if (last.type !== pairs[char]) {
+                            return {
+                                isBalanced: false,
+                                type: `mismatched ${last.type} and ${char}`,
+                                position: i
+                            };
+                        }
+                    }
+                }
+                
+                // Check if any parentheses remain unclosed
+                if (stack.length > 0) {
+                    const last = stack.pop();
+                    return {
+                        isBalanced: false,
+                        type: `unclosed ${last.type}`,
+                        position: last.position
+                    };
+                }
+                
+                return { isBalanced: true };
+            }
+        });
+    </script>
+</body>
+</html>
